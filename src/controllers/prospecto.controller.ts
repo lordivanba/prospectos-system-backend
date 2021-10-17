@@ -1,6 +1,10 @@
 import {Request, Response} from 'express'
 import {getRepository} from 'typeorm'
 import {Prospecto} from '../entity/Prospecto'
+import {Documento} from '../entity/Documento'
+import path from 'path'
+import { equal } from 'assert'
+
 
 // Get All
 export const getProspectos = async (req: Request, res: Response): Promise<Response> => {
@@ -32,6 +36,20 @@ export const createProspecto = async (req: Request, res: Response): Promise<Resp
     
     getRepository(Prospecto).create(newProspecto);
     const results = await getRepository(Prospecto).save(newProspecto);
+
+    if(req.file){
+        const prospectoId = results.id;
+        const newDoc = {
+            prospectoId: prospectoId,
+            nombre: req.file?.originalname,
+            documentoPath: req.file?.path
+
+        }
+    
+        getRepository(Documento).create(newDoc);
+        const resultsDoc = await getRepository(Documento).save(newDoc);
+    }
+
     return res.json(results);
 };
 

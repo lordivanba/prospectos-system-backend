@@ -8,6 +8,7 @@ var morgan_1 = __importDefault(require("morgan"));
 var cors_1 = __importDefault(require("cors"));
 var typeorm_1 = require("typeorm");
 var prospecto_routes_1 = __importDefault(require("./routes/prospecto.routes"));
+var path_1 = __importDefault(require("path"));
 var app = (0, express_1.default)();
 (0, typeorm_1.createConnection)();
 // Middlewares
@@ -16,5 +17,7 @@ app.use(express_1.default.json());
 app.use((0, morgan_1.default)('dev'));
 // routes
 app.use("/api", prospecto_routes_1.default);
+//uploads folder
+app.use("/uploads", express_1.default.static(path_1.default.resolve("uploads")));
 app.listen(3000);
 console.log('Server on port', 3000);

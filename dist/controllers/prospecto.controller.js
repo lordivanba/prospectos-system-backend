@@ -39,6 +39,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateObservacionProspecto = exports.updateEstatusProspecto = exports.updateProspecto = exports.createProspecto = exports.getProspecto = exports.getProspectos = void 0;
 var typeorm_1 = require("typeorm");
 var Prospecto_1 = require("../entity/Prospecto");
+var Documento_1 = require("../entity/Documento");
 // Get All
 var getProspectos = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var prospectos;
@@ -69,9 +70,10 @@ var getProspecto = function (req, res) { return __awaiter(void 0, void 0, void 0
 exports.getProspecto = getProspecto;
 // Create
 var createProspecto = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, nombre, apellido, calle, colonia, codigoPostal, telefono, rfc, newProspecto, results;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
+    var _a, nombre, apellido, calle, colonia, codigoPostal, telefono, rfc, newProspecto, results, prospectoId, newDoc, resultsDoc;
+    var _b, _c;
+    return __generator(this, function (_d) {
+        switch (_d.label) {
             case 0:
                 _a = req.body, nombre = _a.nombre, apellido = _a.apellido, calle = _a.calle, colonia = _a.colonia, codigoPostal = _a.codigoPostal, telefono = _a.telefono, rfc = _a.rfc;
                 newProspecto = {
@@ -88,8 +90,20 @@ var createProspecto = function (req, res) { return __awaiter(void 0, void 0, voi
                 (0, typeorm_1.getRepository)(Prospecto_1.Prospecto).create(newProspecto);
                 return [4 /*yield*/, (0, typeorm_1.getRepository)(Prospecto_1.Prospecto).save(newProspecto)];
             case 1:
-                results = _b.sent();
-                return [2 /*return*/, res.json(results)];
+                results = _d.sent();
+                if (!req.file) return [3 /*break*/, 3];
+                prospectoId = results.id;
+                newDoc = {
+                    prospectoId: prospectoId,
+                    nombre: (_b = req.file) === null || _b === void 0 ? void 0 : _b.originalname,
+                    documentoPath: (_c = req.file) === null || _c === void 0 ? void 0 : _c.path
+                };
+                (0, typeorm_1.getRepository)(Documento_1.Documento).create(newDoc);
+                return [4 /*yield*/, (0, typeorm_1.getRepository)(Documento_1.Documento).save(newDoc)];
+            case 2:
+                resultsDoc = _d.sent();
+                _d.label = 3;
+            case 3: return [2 /*return*/, res.json(results)];
         }
     });
 }); };
